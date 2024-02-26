@@ -1,59 +1,136 @@
-import java.util.PriorityQueue;
-import java.util.Random;
-import java.util.Scanner;
-
 public class TaskClass {
-    private static PriorityQueue<Toy> toyPriorityQueue = new PriorityQueue<>(new ToyComparator<>());
-
+    /**
+     * Запуск меню и ввода команд
+     */
     public static void run() {
-        int countToys = 0;
+        Magazin mag = new Magazin();
+        String command;
         while (true) {
-            try {
-                countToys = Integer.parseInt(inputStr("Введи количество наименований игрушек\n-> "));
+            command = InputData.inputStr("Введи команду (помощь - help)\n-> ").toLowerCase();
+            if (command.isEmpty()) {
+                System.out.println("Завершение работы приложения.");
                 break;
-            } catch (NumberFormatException e) {
-                System.out.println("Нужно ввести число!");
             }
-        }
-
-        for (int i = 1; i < (countToys + 1); i++) {
-            while (true) {
-                System.out.printf("+++Введи параметры игрушки %d +++\n", i);
-                String toyWeight = inputStr("Вес: ");
-                String toyName = inputStr("Название: ");
-                try {
-                    toyPriorityQueue.add(Toy.create(String.valueOf(i), toyName, toyWeight));
-                    break;
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
+            switch (command) {
+                case "help" -> {
+                    System.out.println("++++++++++++");
+                    System.out.println("Список команд:");
+                    System.out.println("add - добавление игрушки");
+                    System.out.println("edit - изменить вес игрушки");
+                    System.out.println("start - начать розыгрыш и сделать запись в файл");
+                    System.out.println("print - вывод ассортимента");
+                    System.out.println("clear - очистка ассортимента");
+                    System.out.println("пустая строка - выход");
+                    System.out.println("++++++++++++");
                 }
+                case "clear" -> mag.clear();
+                case "add" -> {
+                    System.out.println("+++ Добавление игрушки +++");
+                    String toyName = InputData.inputStr("Название: ");
+                    String toyCount = InputData.inputStr("Количество: ");
+                    String toyWeight = InputData.inputStr("Вес(в % от 100): ");
+                    while (true) {
+                        try {
+                            mag.addToy(Toys.create(Toy.create(toyName, toyWeight), toyCount));
+                            break;
+                        } catch (MyException e) {
+                            System.out.println(e.getMessage());
+                            switch (e.getInfo()) {
+                                case "count" -> toyCount = InputData.inputStr("Количество: ");
+                                case "weight" -> toyWeight = InputData.inputStr("Вес(в % от 100): ");
+                            }
+                        }
+                    }
+                    System.out.println("+++ Игрушка добавлена! +++");
+                }
+                case "edit" -> {
+                    int toyId ;
+                    if (!mag.isEmpty()) {
+                        System.out.println("+++ Изменение веса игрушки +++");
+                        command = InputData.inputStr(String.format("Всего видов игрушек %d\nВведи id игрушки: ", mag.getTypeOfToysCount()));
+                        while (true) {
+                            try {
+                                toyId = Integer.parseInt(command);
+                                break;
+                            } catch (Exception e) {
+                                System.out.println("Некорректный id! Нужно целое число!");
+                                command = InputData.inputStr(String.format("Всего видов игрушек %d\nВведи id игрушки: ", mag.getTypeOfToysCount()));
+                            }
+                        }
+                        command = InputData.inputStr("Новый вес(в % от 100): ");
+                        while (true) {
+                            try {
+                                mag.setNewWeight(toyId - 1, command);
+                                break;
+                            } catch (MyException e) {
+                                System.out.println(e.getMessage());
+                                command = InputData.inputStr("Новый вес(в % от 100): ");
+                            }
+                        }
+                        System.out.printf("+++ Вес игрушки c ID %d изменен! +++\n", toyId);
+                    } else {
+                        System.out.println("Нет игрушек для изменения веса. Нужно добавить игрушки в магазин.");
+                    }
+
+                }
+                case "start" -> {
+                    if (!mag.isEmpty() && mag.allToyCount()>0 ) {
+                        command = InputData.inputStr("Количество розыгрышей: ");
+                        int count;
+                        while (true) {
+                            try {
+                                count = Integer.parseInt(command);
+                                break;
+                            } catch (Exception e) {
+                                System.out.println("Нужно ввести целое число!");
+                                command = InputData.inputStr("Количество розыгрышей: ");
+                            }
+                        }
+                        start(mag, count);
+                    } else {
+                        System.out.println("Нет игрушек для розыгрыша. Нужно добавить игрушки в магазин.");
+                    }
+                }
+                case "aa" -> testMag(mag);
+                case "print" -> {
+                    System.out.println("++++ Список игрушек ++++");
+                    mag.printAllToys();
+                    System.out.println("++++");
+                }
+                default -> System.out.println("Неверная команда!");
             }
         }
-        for (int i = 0; i <10 ; i++) {
-            get(toyPriorityQueue);
+    }
+
+    /**
+     * Запуск розыгрышей
+     *
+     * @param mag магазин с игрушками
+     * @param n   количество розыгрышей
+     */
+    private static void start(Magazin mag, int n) {
+        try {
+            DataToFile.fileCreate(mag.getPrize(n));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
 
-    private static String inputStr(String message)  {
-        Scanner sc = new Scanner(System.in);
-        System.out.print(message);
-        return sc.nextLine();
+    /**
+     * Тестовый набор игрушек для магазина
+     *
+     * @param mag Магазин, в который добавить 5 игрушек
+     */
+    private static void testMag(Magazin mag) {
+        try {
+            mag.addToy(Toys.create(Toy.create("Игрушка1", "20"), "10"));
+            mag.addToy(Toys.create(Toy.create("Игрушка2", "20"), "10"));
+            mag.addToy(Toys.create(Toy.create("Игрушка3", "6"), "10"));
+            mag.addToy(Toys.create(Toy.create("Игрушка4", "95"), "10"));
+            mag.addToy(Toys.create(Toy.create("Игрушка5", "10"), "10"));
+            System.out.println("5 видов игрушек добавлены!");
+        } catch (MyException e) {
+            System.out.println(e.getMessage());
+        }
     }
-    public  static void get(PriorityQueue<Toy> pQ){
-        System.out.println(pQ.peek().getToyName());
-//        System.out.println(randomInt(pQ.size()));
-//        int id = randomInt(pQ.size());
-//        for (int i = 0; i < pQ.size(); i++) {
-//            id -= chance[i];
-//            if(index < 0) {
-//                System.out.println("Случайное число: " + number[i]);
-//                break;
-//            }
-//        }
-    }
-    private static int randomInt(int max){
-        Random rnd = new Random();
-        return rnd.nextInt(1,max+1);
-    }
-
 }

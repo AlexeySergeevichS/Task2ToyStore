@@ -1,44 +1,76 @@
+/**
+ * Игрушка
+ */
 public class Toy {
+    /**
+     * Количество видов игрушек, используется для формирования ID
+     */
+    private static int countTypeOfToys;
+    /**
+     * ID игрушки
+     */
     private int id;
+    /**
+     * Название игрушки
+     */
     private String toyName;
+    /**
+     * Вес игрушки (в % от 100)
+     */
     private int toyWeight;
-    private Toy(int id, String toyName, int toyWeight) {
-        this.id = id;
+
+    /**
+     * Конструктор
+     * @param toyName имя создаваемой игрушки
+     * @param toyWeight все создаваемой игрушки
+     */
+    private Toy(String toyName, int toyWeight){
+        this.id = ++countTypeOfToys;
         this.toyName = toyName;
         this.toyWeight = toyWeight;
     }
-    public static Toy create(String toyId, String toyName,String toyWeight) throws Exception{
-        int tempId ;
+
+    /**
+     *
+     * @param toyName имя создаванмой игрушки
+     * @param toyWeight вес создаваемой игрушки
+     * @return Возвращает новый экземпляр Toy
+     * @throws MyException ошибка преобразования строки в число
+     */
+    public static Toy create(String toyName, String toyWeight) throws MyException {
         int tempWeight;
-        try{
-            tempId = Integer.parseInt(toyId);
-        }
-        catch (Exception e)
-        {
-            throw new Exception("Некорректный ID игрушки! ID только целое число!");
-        }
-        try{
+        String info = "weight";
+        try {
             tempWeight = Integer.parseInt(toyWeight);
-            if (tempWeight<1){
-                throw new Exception("Некорректный вес игрушки! Вес должен быть больше 0!");
+            if (tempWeight < 1 || tempWeight > 100) {
+                throw new MyException("Некорректный вес игрушки! Вес должен быть больше 0 и не больше 100!", info);
             }
+        } catch (Exception e) {
+            throw new MyException("Некорректный вес игрушки! Вес только целое число!", info);
         }
-        catch (Exception e)
-        {
-            throw new Exception("Некорректный вес игрушки! Вес только целое число!");
-        }
-        return new Toy(tempId,toyName,tempWeight);
+        return new Toy(toyName, tempWeight);
     }
-    public String getId() {
-        return String.valueOf(id);
-    }
-    public String getToyName() {
-        return toyName;
-    }
-    public int getToyWeight(){
+
+    /**
+     * Вес игрушки
+     * @return возвращает вес игрушки
+     */
+    public int getToyWeight() {
         return toyWeight;
     }
-    public String getToyStringWeight() {
-        return String.valueOf(toyWeight);
+
+    /**
+     * Редактирование веса созданной игрушки
+     * @param toyWeight новое значение веса
+     * @throws MyException ошибка диапазона введенного числа
+     */
+    public void setToyWeight(int toyWeight) throws MyException {
+        if (toyWeight < 1 || toyWeight > 100)
+            throw new MyException("Некорректный вес игрушки! Вес должен быть больше 0 и не больше 100!", "weight");
+        this.toyWeight = toyWeight;
+    }
+    @Override
+    public String toString() {
+        return String.format("Игрушка %s, ID= %d, Вес= %d", toyName, id, toyWeight);
     }
 }
