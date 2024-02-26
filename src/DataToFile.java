@@ -9,7 +9,7 @@ final public class DataToFile {
      * Создает файл, если его нет и записывает даннык,
      *
      * @param data массив для записи в файл
-     * @throws IOException Ошибка ввода вывода
+     * @throws IOException          Ошибка ввода вывода
      * @throws NullPointerException Ошибка пустой очереди
      */
 
@@ -19,7 +19,7 @@ final public class DataToFile {
         System.out.println("Запись результатов в файл...");
         try (FileWriter fileWriter = new FileWriter("result.txt", append);) {
             StringBuilder dataToWrite = new StringBuilder();
-            while(!data.isEmpty()){
+            while (!data.isEmpty()) {
                 dataToWrite.append(data.poll()).append("\n");
             }
 //            for (String element : data) dataToWrite.append(element).append("\n");
@@ -29,11 +29,6 @@ final public class DataToFile {
         }
 
     }
-
-
-
-
-
 
 
 }

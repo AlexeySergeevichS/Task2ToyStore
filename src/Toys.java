@@ -8,7 +8,8 @@ public class Toys {
 
     /**
      * Конструктор
-     * @param toy игрушка
+     *
+     * @param toy      игрушка
      * @param toyCount количество
      */
     private Toys(Toy toy, int toyCount) {
@@ -19,12 +20,13 @@ public class Toys {
 
     /**
      * Создание Игрушек
-     * @param t игрушка
+     *
+     * @param t     игрушка
      * @param count количество
      * @return возвращает новый экземпляр Toys
      * @throws MyException ошибка преобразования строки в число
      */
-     public static Toys create(Toy t, String count) throws MyException {
+    public static Toys create(Toy t, String count) throws MyException {
         int tempCount;
         String info = "count";
         try {
@@ -40,11 +42,13 @@ public class Toys {
 
     /**
      * Количество конкретной игрушки
+     *
      * @return возвращает количество конкретного вида игрушек
      */
     public int getToyCount() {
         return toyCount;
     }
+
     @Override
     public String toString() {
         return toy + String.format(", Кол-во= %d", toyCount);
@@ -52,6 +56,7 @@ public class Toys {
 
     /**
      * Игрушка
+     *
      * @return возвращает Toy
      */
     public Toy getToy() {

@@ -21,18 +21,18 @@ public class Toy {
 
     /**
      * Конструктор
-     * @param toyName имя создаваемой игрушки
+     *
+     * @param toyName   имя создаваемой игрушки
      * @param toyWeight все создаваемой игрушки
      */
-    private Toy(String toyName, int toyWeight){
+    private Toy(String toyName, int toyWeight) {
         this.id = ++countTypeOfToys;
         this.toyName = toyName;
         this.toyWeight = toyWeight;
     }
 
     /**
-     *
-     * @param toyName имя создаванмой игрушки
+     * @param toyName   имя создаванмой игрушки
      * @param toyWeight вес создаваемой игрушки
      * @return Возвращает новый экземпляр Toy
      * @throws MyException ошибка преобразования строки в число
@@ -53,6 +53,7 @@ public class Toy {
 
     /**
      * Вес игрушки
+     *
      * @return возвращает вес игрушки
      */
     public int getToyWeight() {
@@ -61,6 +62,7 @@ public class Toy {
 
     /**
      * Редактирование веса созданной игрушки
+     *
      * @param toyWeight новое значение веса
      * @throws MyException ошибка диапазона введенного числа
      */
@@ -69,6 +71,7 @@ public class Toy {
             throw new MyException("Некорректный вес игрушки! Вес должен быть больше 0 и не больше 100!", "weight");
         this.toyWeight = toyWeight;
     }
+
     @Override
     public String toString() {
         return String.format("Игрушка %s, ID= %d, Вес= %d", toyName, id, toyWeight);

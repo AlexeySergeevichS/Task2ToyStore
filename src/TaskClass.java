@@ -44,7 +44,7 @@ public class TaskClass {
                     System.out.println("+++ Игрушка добавлена! +++");
                 }
                 case "edit" -> {
-                    int toyId ;
+                    int toyId;
                     if (!mag.isEmpty()) {
                         System.out.println("+++ Изменение веса игрушки +++");
                         command = InputData.inputStr(String.format("Всего видов игрушек %d\nВведи id игрушки: ", mag.getTypeOfToysCount()));
@@ -74,7 +74,7 @@ public class TaskClass {
 
                 }
                 case "start" -> {
-                    if (!mag.isEmpty() && mag.allToyCount()>0 ) {
+                    if (!mag.isEmpty() && mag.allToyCount() > 0) {
                         command = InputData.inputStr("Количество розыгрышей: ");
                         int count;
                         while (true) {
